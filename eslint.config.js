@@ -19,5 +19,27 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    files: ['src/**/*.{js,jsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '(^|/)server/',
+              message: 'Server-only modules must not be imported into client code.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['server/**/*.js', 'api/**/*.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
   eslintConfigPrettier,
 ])
