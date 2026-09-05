@@ -50,9 +50,8 @@ function App() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-7 text-muted sm:text-lg">
-              The React foundation now uses a consistent visual system for
-              colors, typography, spacing, surfaces, status states, and focus
-              styles.
+              The React foundation now uses a consistent visual system for colors, typography,
+              spacing, surfaces, status states, and focus styles.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -62,9 +61,7 @@ function App() {
                   className="rounded-control border border-line bg-canvas p-5"
                 >
                   <h2 className="font-bold text-ink">{item.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-muted">
-                    {item.description}
-                  </p>
+                  <p className="mt-2 text-sm leading-6 text-muted">{item.description}</p>
                 </article>
               ))}
             </div>

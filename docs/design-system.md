@@ -6,17 +6,17 @@ The interface should feel calm, reliable, private, and easy to use on a phone. U
 
 ## Core colors
 
-| Token | Purpose |
-|---|---|
-| `brand-*` | Primary actions, selected navigation and emphasis |
-| `canvas` | Application background |
-| `surface` | Cards, dialogs and form surfaces |
-| `ink` | Primary text |
-| `muted` | Secondary text and metadata |
-| `line` | Borders and separators |
-| `success-*` | Recovered and fully paid states |
-| `warning-*` | Due-soon and due-today states |
-| `danger-*` | Overdue, errors and destructive actions |
+| Token       | Purpose                                           |
+| ----------- | ------------------------------------------------- |
+| `brand-*`   | Primary actions, selected navigation and emphasis |
+| `canvas`    | Application background                            |
+| `surface`   | Cards, dialogs and form surfaces                  |
+| `ink`       | Primary text                                      |
+| `muted`     | Secondary text and metadata                       |
+| `line`      | Borders and separators                            |
+| `success-*` | Recovered and fully paid states                   |
+| `warning-*` | Due-soon and due-today states                     |
+| `danger-*`  | Overdue, errors and destructive actions           |
 
 Use semantic tokens instead of arbitrary color values inside components.
 

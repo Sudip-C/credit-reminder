@@ -32,18 +32,18 @@ flowchart TD
 
 ## Architecture
 
-| Layer | Choice | Responsibility |
-|---|---|---|
-| Client | React + JavaScript + Vite | Dashboard, forms, payment tracking, reminder preview, WhatsApp deep link |
-| UI | Tailwind CSS | Mobile-first, accessible interface |
-| PWA | Web App Manifest + service worker | Installability, app-shell caching, push notification handling |
-| Authentication | Supabase Auth | Email/password or magic-link session |
-| Database | Supabase Postgres | Credits, payments, settings, subscriptions, reminder events |
-| Authorization | Supabase Row Level Security | Every user can access only their own records |
-| Server | Node.js + Express on Vercel Functions | Privileged push subscription and scheduled reminder operations |
-| Scheduler | Vercel Cron | Runs the protected due-reminder job |
-| Notifications | Web Push + VAPID | Notifies the lender even when the PWA is closed where browser support permits |
-| WhatsApp | Click-to-chat deep link | Opens a reviewed, prefilled message for manual sending |
+| Layer          | Choice                                | Responsibility                                                                |
+| -------------- | ------------------------------------- | ----------------------------------------------------------------------------- |
+| Client         | React + JavaScript + Vite             | Dashboard, forms, payment tracking, reminder preview, WhatsApp deep link      |
+| UI             | Tailwind CSS                          | Mobile-first, accessible interface                                            |
+| PWA            | Web App Manifest + service worker     | Installability, app-shell caching, push notification handling                 |
+| Authentication | Supabase Auth                         | Email/password or magic-link session                                          |
+| Database       | Supabase Postgres                     | Credits, payments, settings, subscriptions, reminder events                   |
+| Authorization  | Supabase Row Level Security           | Every user can access only their own records                                  |
+| Server         | Node.js + Express on Vercel Functions | Privileged push subscription and scheduled reminder operations                |
+| Scheduler      | Vercel Cron                           | Runs the protected due-reminder job                                           |
+| Notifications  | Web Push + VAPID                      | Notifies the lender even when the PWA is closed where browser support permits |
+| WhatsApp       | Click-to-chat deep link               | Opens a reviewed, prefilled message for manual sending                        |
 
 ## Repository shape
 
@@ -66,19 +66,20 @@ credit-reminder/
 
 ## Data model
 
-| Table | Important fields | Notes |
-|---|---|---|
-| `profiles` | `id`, `timezone`, `default_language` | One row per authenticated user |
-| `credits` | `id`, `user_id`, `borrower_name`, `phone_e164`, `principal_paise`, `paid_paise`, `borrowed_on`, `due_on`, `status`, `notes` | Amounts are stored as integer paise, never floating point |
-| `payments` | `id`, `credit_id`, `user_id`, `amount_paise`, `paid_on`, `note` | Supports partial and full payments |
-| `push_subscriptions` | `id`, `user_id`, `endpoint`, encrypted push keys | One user can have multiple devices |
-| `reminder_events` | `id`, `credit_id`, `user_id`, `channel`, `event_type`, `created_at`, `dedupe_key` | Records “push sent” or “WhatsApp opened,” not unverified delivery |
+| Table                | Important fields                                                                                                            | Notes                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `profiles`           | `id`, `timezone`, `default_language`                                                                                        | One row per authenticated user                                    |
+| `credits`            | `id`, `user_id`, `borrower_name`, `phone_e164`, `principal_paise`, `paid_paise`, `borrowed_on`, `due_on`, `status`, `notes` | Amounts are stored as integer paise, never floating point         |
+| `payments`           | `id`, `credit_id`, `user_id`, `amount_paise`, `paid_on`, `note`                                                             | Supports partial and full payments                                |
+| `push_subscriptions` | `id`, `user_id`, `endpoint`, encrypted push keys                                                                            | One user can have multiple devices                                |
+| `reminder_events`    | `id`, `credit_id`, `user_id`, `channel`, `event_type`, `created_at`, `dedupe_key`                                           | Records “push sent” or “WhatsApp opened,” not unverified delivery |
 
 A database trigger recalculates `credits.paid_paise` and `status` after payment changes. Common queries are indexed by `user_id`, `status`, and `due_on`.
 
 ## Core flows
 
 ### Add a credit
+
 1. User signs in.
 2. User enters borrower name, phone with country code, amount, borrowed date, due date and optional notes.
 3. Client validates the form.
@@ -86,6 +87,7 @@ A database trigger recalculates `credits.paid_paise` and `status` after payment 
 5. RLS prevents access by every other user.
 
 ### Due-date notification
+
 1. A protected daily cron endpoint finds open credits due today or overdue.
 2. The server sends Web Push only to the owning user's registered devices.
 3. A unique dedupe key prevents the same credit/date/device alert from being sent twice.
@@ -93,6 +95,7 @@ A database trigger recalculates `credits.paid_paise` and `status` after payment 
 5. The first MVP guarantees a due-date alert window, not an exact minute. Custom-time reminders can be added later.
 
 ### WhatsApp reminder
+
 1. User opens a credit and chooses English or Bengali.
 2. App shows the exact message and outstanding balance.
 3. User taps **Open WhatsApp**.
@@ -100,6 +103,7 @@ A database trigger recalculates `credits.paid_paise` and `status` after payment 
 5. App records `whatsapp_opened`; the user still reviews and taps Send in WhatsApp.
 
 ### Payment
+
 1. User records a positive amount no greater than the outstanding balance.
 2. The payment is added to history.
 3. The database recalculates paid amount and status: `open`, `partial`, or `paid`.
