@@ -1,9 +1,7 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-sans:
-    Inter, "Noto Sans Bengali", "Nirmala UI", ui-sans-serif, system-ui,
-    sans-serif;
+  --font-sans: Inter, 'Noto Sans Bengali', 'Nirmala UI', ui-sans-serif, system-ui, sans-serif;
 
   --color-brand-50: #eff6ff;
   --color-brand-100: #dbeafe;
